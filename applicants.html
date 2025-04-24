@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/fav.png">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>AL-AQSHA Admin</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+        <!--
+        CSS
+        ============================================= -->
+        <link rel="stylesheet" href="css/linearicons.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/nice-select.css">                  
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+        <style>
+            .table-container {
+                margin-top: 30px;
+            }
+    
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+    
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+    
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+    
+            .delete-btn {
+                background-color: red;
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                cursor: pointer;
+            }
+    
+            .delete-btn:hover {
+                background-color: darkred;
+            }
+
+
+        </style>
+    </head>
+    <body>
+
+    <header id="header" id="home" style="background-color:#000000a8;">
+        <div class="container mt-25">
+            <div class="row align-items-center justify-content-between d-flex">
+              <div id="logo">
+                <a href="index.html"><img class="bg-img" src="img/logo.png"/></a>
+                <p>AL-AQSHA</p>
+              </div> 
+              <nav id="nav-menu-container">
+                <ul class="nav-menu">
+                  <li class="menu-active"><a href="index.html">Home</a></li>
+                  <li><a href="about.html">About</a></li>
+                  <li><a href="services.html">Services</a></li>
+                  <li><a href="career.html">Careers</a></li>
+                  <li><a href="clients.html">Our Clients</a></li>
+                  <li><a href="#footer">Contact</a></li>			          
+                </ul>
+              </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+      </header>
+
+      <div id="findDetails" style="position: absolute;margin-top: 8%;left: 10%;">
+        <h1>Applicants</h1>
+        <div id="adsContainer" class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Specialization</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="adsTableBody">
+                    <!-- Applicants will be displayed here -->
+                </tbody>
+            </table>
+        </div><br><br>
+        <button id="applicantsBtn" class="primary-btn mt-10" style="margin-left:10%;">View Applicants</button>
+    </div>
+
+    <button id="exportBtn" class="primary-btn mt-10" style="margin-top:8%;margin-left: 70%;">Export to Excel</button>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyDI3TtZqhCvt2TCREPi7PYEm9b7IW23HRE",
+            authDomain: "al-aqsha-7c7ea.firebaseapp.com",
+            databaseURL: "https://al-aqsha-7c7ea-default-rtdb.firebaseio.com",
+            projectId: "al-aqsha-7c7ea",
+            storageBucket: "al-aqsha-7c7ea.firebasestorage.app",
+            messagingSenderId: "997100251873",
+            appId: "1:997100251873:web:1821c6b2f4542ee97d65a0"
+        };
+
+        import {getDatabase, ref, get, remove} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+
+        var adsTableBody = document.querySelector("#adsTableBody");
+        var applicantsBtn = document.querySelector("#applicantsBtn");
+
+        function Showapplicants() {
+            const dbref = ref(db, "Job_Applicants");
+        
+            get(dbref).then((snapshot) => {
+                if (snapshot.exists()) {
+                    adsTableBody.innerHTML = "";  // Clear the table body first
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const jobTitle = childSnapshot.key; // Get the job title for reference
+        
+                        // Append a row with applicant data
+                        adsTableBody.innerHTML += `
+                            <tr id="ad-${jobTitle}">
+                                <td>${data.Name}</td>
+                                <td>${data.Email}</td>
+                                <td>${data.Phone_No}</td>
+                                <td>${data.Address}</td>
+                                <td>${data.Specialization}</td>
+                                <td><button class="delete-btn" data-job-title="${jobTitle}">Delete</button></td>
+                            </tr>
+                        `;
+                    });
+        
+                    // Attach event listeners to all delete buttons
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const jobTitle = this.getAttribute('data-job-title');
+                            deleteAd(jobTitle);
+                        });
+                    });
+                } else {
+                    alert("No applicants found");
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        }
+
+        function deleteAd(jobTitle) {
+            remove(ref(db, "Job_Applicants/" + jobTitle))
+                .then(() => {
+                    alert("Applicant deleted successfully");
+        
+                    // Remove the row from the table
+                    const adElement = document.getElementById(`ad-${jobTitle}`);
+                    if (adElement) {
+                        adElement.remove();
+                    }
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }
+        
+        applicantsBtn.addEventListener('click', Showapplicants);
+
+        function exportTableToExcel(tableID, filename = ''){
+            var dataType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+            
+            // Create a download link
+            var downloadLink = document.createElement("a");
+            document.body.appendChild(downloadLink);
+            
+            var worksheet = XLSX.utils.table_to_book(tableSelect, {sheet: "Applicants"});
+            XLSX.writeFile(worksheet, filename || 'applicants.xlsx');
+        }
+        
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            exportTableToExcel('adsTableBody', 'applicants.xlsx');
+        });
+    </script>
+
+
+      <script src="js/vendor/jquery-2.2.4.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="js/vendor/bootstrap.min.js"></script>          
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+            <script src="js/easing.min.js"></script>            
+            <script src="js/hoverIntent.js"></script>
+            <script src="js/superfish.min.js"></script> 
+            <script src="js/jquery.ajaxchimp.min.js"></script>
+            <script src="js/jquery.magnific-popup.min.js"></script> 
+            <script src="js/owl.carousel.min.js"></script>  
+            <script src="js/imagesloaded.pkgd.min.js"></script>
+            <script src="js/justified.min.js"></script>                 
+            <script src="js/jquery.sticky.js"></script>
+            <script src="js/jquery.nice-select.min.js"></script>            
+            <script src="js/parallax.min.js"></script>      
+            <script src="js/mail-script.js"></script>   
+            <script src="js/main.js"></script>  
+            
+</body>
+</html>

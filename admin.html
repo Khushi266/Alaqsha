@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/fav.png">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>AL-AQSHA Admin</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+        <!--
+        CSS
+        ============================================= -->
+        <link rel="stylesheet" href="css/linearicons.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/nice-select.css">                  
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.css">
+        <link rel="stylesheet" href="css/main.css">
+        <style>
+            .form-group input{
+                height: 34px;
+                width: 101%;
+                font-size: 18px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+
+    <header id="header" id="home" style="background-color:#000000a8;">
+        <div class="container mt-25">
+            <div class="row align-items-center justify-content-between d-flex">
+              <div id="logo">
+                <a href="index.html"><img class="bg-img" src="img/logo.png"/></a>
+                <p>AL-AQSHA</p>
+              </div> 
+              <nav id="nav-menu-container">
+                <ul class="nav-menu">
+                  <li class="menu-active"><a href="index.html">Home</a></li>
+                  <li><a href="about.html">About</a></li>
+                  <li><a href="services.html">Services</a></li>
+                  <li><a href="career.html">Careers</a></li>
+                  <li><a href="clients.html">Our Clients</a></li>
+                  <li><a href="#footer">Contact</a></li>			          
+                </ul>
+              </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+      </header>
+
+      <a class="primary-btn mt-20" href="applicants.html" style="    top: 7%;
+    position: absolute;
+    left: 13%;">View Applicants</a>
+
+
+    <section class="section-gap">
+        <section class="commentform-area pt-80">
+            <div class="container">
+                <div class="row ">
+                    <div class="">
+            <h3 style="margin-bottom:30px;">Enter the details for advertisement</h3>
+    
+            <div class="form-group">
+            <h4>Job Title</h4> 
+            <input id="enterTitle" type="text" > <br></div>
+    
+            <div class="form-group">
+            <h4>Company Name</h4> 
+            <input id="enterCompanyName" type="text"> <br></div>
+    
+            <div class="form-group">
+            <h4>Description</h4> 
+            <input id="enterDescription" type="text"><br></div>
+    
+            <div class="form-group">
+            <h4>Deadline to Apply</h4> 
+            <input id="enterRequirements" type="date"><br></div>
+    
+            <div class="form-group">
+            <h4>Salary</h4> 
+            <input id="enterSalary" type="number"> <br></div>
+            
+            <div class="form-group">
+            <h4>Location</h4> 
+            <input id="enterLocation" type="text"><br></div>
+            
+            
+        </div>
+        <div class="col-lg-8 col-md-6">
+            <button class="primary-btn mt-20" href="#" id="insert">Add Advertisement</button>
+        </div>
+    </div>
+</div>    
+    </section>
+
+ 
+    <div id="findDetails" style="position: absolute;top: 17%;left: 60%;">
+        <h1>Advertisements</h1>
+        <div id="adsContainer"></div><br><br>
+        <button id="advertisementsBtn" class="primary-btn mt-10" style="margin-left:10%;">View Advertisements</button>
+        <br><br>
+    </div>
+
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyDI3TtZqhCvt2TCREPi7PYEm9b7IW23HRE",
+            authDomain: "al-aqsha-7c7ea.firebaseapp.com",
+            databaseURL: "https://al-aqsha-7c7ea-default-rtdb.firebaseio.com",
+            projectId: "al-aqsha-7c7ea",
+            storageBucket: "al-aqsha-7c7ea.firebasestorage.app",
+            messagingSenderId: "997100251873",
+            appId: "1:997100251873:web:1821c6b2f4542ee97d65a0"
+        };
+   
+
+        import {getDatabase, ref, get, set, child, update, remove}
+        from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+        
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+
+        var enterTitle = document.querySelector("#enterTitle");
+        var enterCompanyName = document.querySelector("#enterCompanyName");
+        var enterDescription = document.querySelector("#enterDescription");
+        var enterRequirements = document.querySelector("#enterRequirements");
+        var enterSalary = document.querySelector("#enterSalary");
+        var enterLocation = document.querySelector("#enterLocation");
+
+
+        var findTitle = document.querySelector("#findTitle");
+        var findCompanyName = document.querySelector("#findCompanyName");
+        var findDescription = document.querySelector("#findDescription");
+        var findRequirements = document.querySelector("#findRequirements");
+        var findSalary = document.querySelector("#findSalary");
+        var findLocation = document.querySelector("#findLocation");
+      
+        var adsContainer = document.querySelector("#adsContainer");
+        var insertBtn = document.querySelector("#insert");
+        var updateBtn = document.querySelector("#update");
+        var removeBtn = document.querySelector("#remove");
+        var advertisementsBtn = document.querySelector("#advertisementsBtn");
+    
+
+        function InsertData() {
+            set(ref(db, "Advertisements/"+ enterTitle.value),{
+                Job_Title: enterTitle.value,
+                Company_Name: enterCompanyName.value,
+                Description: enterDescription.value,
+                Deadline: enterRequirements.value,
+                Salary: enterSalary.value,
+                Location: enterLocation.value,
+                Image : enterImage.value
+            })
+            .then(()=>{
+                alert("Data added successfully");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+        }
+
+        function ShowAdvertisements() {
+            const dbref = ref(db, "Advertisements");
+        
+            get(dbref).then((snapshot) => {
+                if (snapshot.exists()) {
+                    adsContainer.innerHTML = "";  // Clear the container first
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const jobTitle = childSnapshot.key; // Get the job title for reference
+        
+                        // Create an advertisement block
+                        adsContainer.innerHTML += `
+                            <div id="ad-${jobTitle}" class="mt-20" style="">
+                                <h3 >Job Title: ${data.Job_Title}</h3>
+                                <p class="mt-10">Company: ${data.Company_Name}</p>
+                                <p>Description: ${data.Description}</p>
+                                <p>Deadline: ${data.Deadline}</p>
+                                <p>Salary: ${data.Salary}</p>
+                                <p>Location: ${data.Location}</p>
+                                <br>
+                                <button class="primary-btn delete-btn" data-job-title="${jobTitle}">Delete</button>
+                                <hr>
+                            </div>
+                        `;
+                    });
+        
+                    // Attach event listeners to all delete buttons
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const jobTitle = this.getAttribute('data-job-title');
+                            deleteAd(jobTitle);
+                        });
+                    });
+                } else {
+                    alert("No advertisements found");
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        }
+        
+        // Function to delete the advertisement
+        function deleteAd(jobTitle) {
+            remove(ref(db, "Advertisements/" + jobTitle))
+                .then(() => {
+                    alert("Advertisement deleted successfully");
+        
+                    // Remove the advertisement block from the page
+                    const adElement = document.getElementById(`ad-${jobTitle}`);
+                    if (adElement) {
+                        adElement.remove();
+                    }
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }
+        
+
+      
+        
+
+        insertBtn.addEventListener('click', InsertData);
+   
+        advertisementsBtn.addEventListener('click', ShowAdvertisements);
+
+      </script>
+      <script src="js/vendor/jquery-2.2.4.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="js/vendor/bootstrap.min.js"></script>          
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+            <script src="js/easing.min.js"></script>            
+            <script src="js/hoverIntent.js"></script>
+            <script src="js/superfish.min.js"></script> 
+            <script src="js/jquery.ajaxchimp.min.js"></script>
+            <script src="js/jquery.magnific-popup.min.js"></script> 
+            <script src="js/owl.carousel.min.js"></script>  
+            <script src="js/imagesloaded.pkgd.min.js"></script>
+            <script src="js/justified.min.js"></script>                 
+            <script src="js/jquery.sticky.js"></script>
+            <script src="js/jquery.nice-select.min.js"></script>            
+            <script src="js/parallax.min.js"></script>      
+            <script src="js/mail-script.js"></script>   
+            <script src="js/main.js"></script>  
+</body>
+</html>
