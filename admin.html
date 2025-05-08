@@ -35,6 +35,93 @@
                 font-size: 18px;
                 margin-top: 20px;
             }
+            #openModalBtn{
+                margin-left: 3%;
+            }
+            .modal {
+            display: none; 
+            position: fixed;
+            z-index: 999;
+            padding-top: 80px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            }
+
+            .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            }
+
+            .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+            }
+
+            .close:hover {
+            color: black;
+            }
+
+            .view-app{
+                margin-top: 2%;
+                margin-left: 5%;
+            }
+            #advertisementsBtn{
+                width: fit-content;
+
+            }
+            #findDetails{
+                margin-top: 8%;
+                text-align: center;
+            }
+            .job-table th {
+                background-color: #f4f4f4;
+                text-align: left;
+            }
+            .table-wrapper {
+    padding: 20px; /* Padding around the entire table */
+}
+            .job-table td, .job-table th {
+                padding: 12px;
+            }
+            @media (max-width: 414px) {
+                .view-app{
+                margin-top: 5%;
+                margin-left: -1%;
+            }
+            #openModalBtn{
+                text-align: center;
+                margin-top: 5%;
+                margin-left: -1%;
+            }
+            #findDetails{
+                margin-top: 20%;
+                text-align: center;
+                
+            }
+            #advertisementsBtn{
+                width:fit-content;
+
+            }
+            .table-wrapper {
+    padding: 20px; /* Padding around the entire table */
+}
+            }
+
         </style>
     </head>
     <body>
@@ -60,59 +147,62 @@
         </div>
       </header>
 
-      <a class="primary-btn mt-20" href="applicants.html" style="    top: 7%;
-    position: absolute;
-    left: 13%;">View Applicants</a>
-
-
-    <section class="section-gap">
-        <section class="commentform-area pt-80">
-            <div class="container">
-                <div class="row ">
-                    <div class="">
-            <h3 style="margin-bottom:30px;">Enter the details for advertisement</h3>
-    
-            <div class="form-group">
-            <h4>Job Title</h4> 
-            <input id="enterTitle" type="text" > <br></div>
-    
-            <div class="form-group">
-            <h4>Company Name</h4> 
-            <input id="enterCompanyName" type="text"> <br></div>
-    
-            <div class="form-group">
-            <h4>Description</h4> 
-            <input id="enterDescription" type="text"><br></div>
-    
-            <div class="form-group">
-            <h4>Deadline to Apply</h4> 
-            <input id="enterRequirements" type="date"><br></div>
-    
-            <div class="form-group">
-            <h4>Salary</h4> 
-            <input id="enterSalary" type="number"> <br></div>
-            
-            <div class="form-group">
-            <h4>Location</h4> 
-            <input id="enterLocation" type="text"><br></div>
-            
-            
-        </div>
-        <div class="col-lg-8 col-md-6">
-            <button class="primary-btn mt-20" href="#" id="insert">Add Advertisement</button>
-        </div>
+      <div id="findDetails">
+        <h1>Advertisements</h1>
+        <button id="advertisementsBtn" class="primary-btn mt-10">View Advertisements</button>
+        <button class="primary-btn" id="openModalBtn">Add Advertisement</button>
+        <a class="primary-btn mt-10 view-app" href="applicants.html" >View Applicants</a>
     </div>
-</div>    
-    </section>
+      
+
+
+
+<div id="adModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+  
+      <h3 style="margin-bottom:30px;">Enter the details for advertisement</h3>
+  
+      <div class="form-group">
+        <h4>Job Title</h4>
+        <input id="enterTitle" type="text"><br>
+      </div>
+  
+      <div class="form-group">
+        <h4>Company Name</h4>
+        <input id="enterCompanyName" type="text"><br>
+      </div>
+  
+      <div class="form-group">
+        <h4>Description</h4>
+        <input id="enterDescription" type="text"><br>
+      </div>
+  
+      <div class="form-group">
+        <h4>Deadline to Apply</h4>
+        <input id="enterRequirements" type="date"><br>
+      </div>
+  
+      <div class="form-group">
+        <h4>Salary</h4>
+        <input id="enterSalary" type="number"><br>
+      </div>
+  
+      <div class="form-group">
+        <h4>Location</h4>
+        <input id="enterLocation" type="text"><br>
+      </div>
+  
+      <button class="primary-btn mt-20" id="insert">Submit Advertisement</button>
+    </div>
+  </div>
 
  
-    <div id="findDetails" style="position: absolute;top: 17%;left: 60%;">
-        <h1>Advertisements</h1>
-        <div id="adsContainer"></div><br><br>
-        <button id="advertisementsBtn" class="primary-btn mt-10" style="margin-left:10%;">View Advertisements</button>
-        <br><br>
-    </div>
+    
 
+  <div class="table-wrapper">
+        <div id="adsContainer"></div><br><br>
+    </div>
 
     <script type="module">
 
@@ -166,7 +256,6 @@
                 Deadline: enterRequirements.value,
                 Salary: enterSalary.value,
                 Location: enterLocation.value,
-                Image : enterImage.value
             })
             .then(()=>{
                 alert("Data added successfully");
@@ -177,45 +266,60 @@
         }
 
         function ShowAdvertisements() {
-            const dbref = ref(db, "Advertisements");
-        
-            get(dbref).then((snapshot) => {
-                if (snapshot.exists()) {
-                    adsContainer.innerHTML = "";  // Clear the container first
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val();
-                        const jobTitle = childSnapshot.key; // Get the job title for reference
-        
-                        // Create an advertisement block
-                        adsContainer.innerHTML += `
-                            <div id="ad-${jobTitle}" class="mt-20" style="">
-                                <h3 >Job Title: ${data.Job_Title}</h3>
-                                <p class="mt-10">Company: ${data.Company_Name}</p>
-                                <p>Description: ${data.Description}</p>
-                                <p>Deadline: ${data.Deadline}</p>
-                                <p>Salary: ${data.Salary}</p>
-                                <p>Location: ${data.Location}</p>
-                                <br>
-                                <button class="primary-btn delete-btn" data-job-title="${jobTitle}">Delete</button>
-                                <hr>
-                            </div>
-                        `;
-                    });
-        
-                    // Attach event listeners to all delete buttons
-                    document.querySelectorAll('.delete-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            const jobTitle = this.getAttribute('data-job-title');
-                            deleteAd(jobTitle);
-                        });
-                    });
-                } else {
-                    alert("No advertisements found");
-                }
-            }).catch((error) => {
-                alert(error);
+    const dbref = ref(db, "Advertisements");
+
+    get(dbref).then((snapshot) => {
+        if (snapshot.exists()) {
+            let tableHTML = `
+                <table class="job-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Description</th>
+                            <th>Deadline</th>
+                            <th>Salary</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const jobTitle = childSnapshot.key;
+
+                tableHTML += `
+                    <tr id="ad-${jobTitle}">
+                        <td>${data.Job_Title}</td>
+                        <td>${data.Company_Name}</td>
+                        <td>${data.Description}</td>
+                        <td>${data.Deadline}</td>
+                        <td>${data.Salary}</td>
+                        <td>${data.Location}</td>
+                        <td><button class="primary-btn delete-btn" data-job-title="${jobTitle}">Delete</button></td>
+                    </tr>
+                `;
             });
+
+            tableHTML += `</tbody></table>`;
+            adsContainer.innerHTML = tableHTML;
+
+            // Attach delete button handlers
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const jobTitle = this.getAttribute('data-job-title');
+                    deleteAd(jobTitle);
+                });
+            });
+        } else {
+            adsContainer.innerHTML = "<p>No advertisements found</p>";
         }
+    }).catch((error) => {
+        alert(error);
+    });
+}
         
         // Function to delete the advertisement
         function deleteAd(jobTitle) {
@@ -236,7 +340,15 @@
         
 
       
-        
+        const modal = document.getElementById("adModal");
+        const openBtn = document.getElementById("openModalBtn");
+        const closeBtn = document.querySelector(".close");
+
+        openBtn.onclick = () => modal.style.display = "block";
+        closeBtn.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        };
 
         insertBtn.addEventListener('click', InsertData);
    

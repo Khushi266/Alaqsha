@@ -90,33 +90,8 @@
 							</div>
 						</div>
 					</div>						
-					<div class="row">
-						<div class="col-lg-6 event-left">
-							<div class="single-events">
-								<img class="img-fluid" src="img/img6.jpg" alt="">
-								<a href="#"><h4>Civil Engineer - Dubai, UAE</h4></a>
-								<h6><span>Company : Kwik Steel Structures</span></h6> Looking for a qualified Civil
-									Engineer to oversee large construction projects in the
-									UAE. The candidate will be responsible for supervising
-									construction activities, coordinating with contractors,
-									and ensuring project timelines are met.<br>
-								<a href="job.html" class="primary-btn text-uppercase">Apply Now</a>
-							</div>
-														
-						</div>
-						<div class="col-lg-6 event-right">
-							<div class="single-events">
-								<a href="#"><h4>Civil Engineer - Dubai, UAE</h4></a>
-								<h6><span>Company : Kwik Steel Structures</span></h6> Looking for a qualified Civil
-									Engineer to oversee large construction projects in the
-									UAE. The candidate will be responsible for supervising
-									construction activities, coordinating with contractors,
-									and ensuring project timelines are met.<br>
-								<a href="job.html" class="primary-btn text-uppercase">Apply Now</a>
-								<img class="img-fluid" src="img/img6.jpg" alt="">
-							</div>
-									
-						</div>
+					<div class="row" id="job-container"></div>
+
 					</div>
 				</div>	
 			</section>
@@ -156,21 +131,21 @@
 								<p>Stay updated with us.</p>
 								<form action="#" method="POST">
 									<div class="form-group">
-									  <input type="text" name="name" placeholder="Your Name" required>
+									  <input type="text" name="name" id="name" placeholder="Your Name" required>
 									</div>
 									
 									<div class="form-group">
-									  <input type="text" name="subject" placeholder="Subject" required>
+									  <input type="text" name="subject" id="message" placeholder="Message" required>
 									</div>
 									<div class="form-group">
-									  <input type="textarea" name="message" placeholder="Your Message" rows="5" required></input>
+									  <input type="number" name="contact" id = "mobile" placeholder="Your Contact No." required>
 									</div>
 									
 								  </form>
 								<div class="" id="mc_embed_signup">
 									<form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
-										<input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
-			                            	<button type="submit" class="click-btn btn btn-default"><span class="lnr lnr-arrow-right"></span></button>
+										<input class="form-control" name="email" id="email" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
+			                            	<button type="submit" id="insert" class="click-btn btn btn-default"><span class="lnr lnr-arrow-right"></span></button>
 			                            	<div style="position: absolute; left: -5000px;">
 												<input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
 											</div>
@@ -196,7 +171,108 @@
 				</div>
 			</footer>	
 			<!-- End footer Area -->		
+			<script type="module">
 
+				import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+			
+				const firebaseConfig = {
+					apiKey: "AIzaSyDI3TtZqhCvt2TCREPi7PYEm9b7IW23HRE",
+					authDomain: "al-aqsha-7c7ea.firebaseapp.com",
+					databaseURL: "https://al-aqsha-7c7ea-default-rtdb.firebaseio.com",
+					projectId: "al-aqsha-7c7ea",
+					storageBucket: "al-aqsha-7c7ea.firebasestorage.app",
+					messagingSenderId: "997100251873",
+					appId: "1:997100251873:web:1821c6b2f4542ee97d65a0"
+				};
+		   
+		
+				import {getDatabase, ref, get, set, child, update, remove}
+				from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+				import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+				
+				
+				const app = initializeApp(firebaseConfig);
+				const db = getDatabase();
+		
+				var name = document.querySelector("#name");
+				var email = document.querySelector("#email");
+				var phone = document.querySelector("#mobile");
+				var message = document.querySelector("#message");
+			
+				
+
+				var insertBtn = document.querySelector("#insert");
+
+				function InsertData() {
+					set(ref(db, "Inquiries/"+ name.value),{
+						Name: name.value,
+						Email: email.value,
+						Phone_No: phone.value,
+						Message: message.value,
+					})
+					.then(()=>{
+						alert("Data added successfully");
+					})
+					.catch((error)=>{
+						alert(error);
+					});
+				}
+				insertBtn.addEventListener('click', InsertData);
+
+
+				const defaultImage = "img/img6.jpg";
+
+				// Load job ads from Realtime Database
+				async function loadJobAds() {
+					const jobContainer = document.getElementById("job-container");
+					jobContainer.innerHTML = "";
+
+					const dbRef = ref(db);
+
+					try {
+					const snapshot = await get(child(dbRef, "Advertisements"));
+
+					if (snapshot.exists()) {
+						const data = snapshot.val();
+						let index = 0;
+
+						Object.keys(data).forEach((key) => {
+						const job = data[key];
+						const title = job.Job_Title || "Job Title";
+						const location = job.Location || "Location";
+						const description = job.Description || "Job description not provided.";
+						const company = job.Company_Name || "N/A";
+						const imageUrl = job.imageUrl || defaultImage;
+
+						const isEven = index % 2 === 0;
+
+						const jobHTML = `
+							<div class="col-lg-6 ${isEven ? "event-left" : "event-right"}">
+							<div class="single-events">
+								${isEven ? `<img class="img-fluid" src="${imageUrl}" alt="">` : ""}
+								<a href="#"><h4>${title} - ${location}</h4></a>
+								<h6><span>Company : ${company}</span></h6>
+								${description}<br>
+								<a href="job.html?id=${encodeURIComponent(key)}" class="primary-btn text-uppercase">Apply Now</a>
+								${!isEven ? `<img class="img-fluid" src="${imageUrl}" alt="">` : ""}
+							</div>
+							</div>`;
+
+						jobContainer.innerHTML += jobHTML;
+						index++;
+						});
+					} else {
+						jobContainer.innerHTML = "<p>No job postings available at the moment.</p>";
+					}
+					} catch (error) {
+					console.error("Error loading jobs:", error);
+					jobContainer.innerHTML = "<p>Failed to load jobs. Please try again later.</p>";
+					}
+				}
+
+				// Load on page load
+				window.addEventListener("DOMContentLoaded", loadJobAds);
+			</script>
 			<script src="js/vendor/jquery-2.2.4.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 			<script src="js/vendor/bootstrap.min.js"></script>			

@@ -62,8 +62,26 @@
             .delete-btn:hover {
                 background-color: darkred;
             }
-
-
+            #findDetails{
+                margin-top: 8%;
+                text-align: center;
+            }
+            #applicantsBtn{
+                margin-top: 2%;
+            }
+            .table-wrapper {
+    padding: 20px; /* Padding around the entire table */
+}
+            @media (max-width: 414px) {
+                #findDetails{
+                margin-top: 20%;
+                text-align: center;
+                
+            }
+            .table-wrapper {
+    padding: 20px; /* Padding around the entire table */
+}
+            }
         </style>
     </head>
     <body>
@@ -89,8 +107,11 @@
         </div>
       </header>
 
-      <div id="findDetails" style="position: absolute;margin-top: 8%;left: 10%;">
+      <div id="findDetails" >
         <h1>Applicants</h1>
+        <button id="applicantsBtn" class="primary-btn mt-10">View Applicants</button>
+        <button id="exportBtn" class="primary-btn mt-10">Export to Excel</button>
+        <div class="table-wrapper">
         <div id="adsContainer" class="table-container">
             <table>
                 <thead>
@@ -108,10 +129,10 @@
                 </tbody>
             </table>
         </div><br><br>
-        <button id="applicantsBtn" class="primary-btn mt-10" style="margin-left:10%;">View Applicants</button>
+    </div>
     </div>
 
-    <button id="exportBtn" class="primary-btn mt-10" style="margin-top:8%;margin-left: 70%;">Export to Excel</button>
+
 
 
     <script type="module">

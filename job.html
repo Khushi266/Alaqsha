@@ -60,68 +60,45 @@
 			<!-- Start blog-posts Area -->
 			<section class="blog-posts-area section-gap">
 				<div class="container">
-					<div class="row">
-						<div class="col-lg-8 post-list blog-post-list">
-							<div class="single-post">
-							
-								<ul class="tags">
-									<li>Company : Kwik Steel Structures</li>
-								</ul>
-								<a href="#">
-									<h1>
-										Civil Engineer - Dubai, UAE
-									</h1>
-								</a>
-								<div class="content-wrap">
-									<p>
-									Looking for a qualified Civil
-									Engineer to oversee large construction projects in the
-									UAE. The candidate will be responsible for supervising
-									construction activities, coordinating with contractors,
-									and ensuring project timelines are met.
-									</p>
-
-
-								</div>
-								
-
-                            <!-- Start nav Area -->
-                            
-
-                            
-                            
-                            <!-- Start commentform Area -->
-                            <section class="commentform-area pt-80">
-                                <div class="container">
-                                    <h3 class="pb-50">Apply</h3>
-                                    <div class="row flex-row d-flex">
-                                        <div class="col-lg-4 col-md-6">
-                                            <input name="name" id="name" placeholder="Enter your name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" class="common-input mb-20 form-control" required="" type="text">
-                                            <input id="email" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your email'" class="common-input mb-20 form-control" required="" type="email">
-											<input id="specialization" placeholder="Enter your specialization" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your email'" class="common-input mb-20 form-control" required="" type="text">
-                                            <input id="address" placeholder="address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your address'" class="common-input mb-20 form-control" required="" type="text">
-                                            <input id="mobile" placeholder="mobile" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your phone number'" class="common-input mb-20 form-control" required="" type="number">
-                                            <input id="resume" placeholder="resume" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Upload your resume'" class="common-input mb-20 form-control" required="" type="file">
-                                        </div>
-                                        <div class="col-lg-8 col-md-6">
-                                            
-                                            <a class="primary-btn mt-20" href="#" id="insert">Send Application</a>
-                                        </div>
-                                    </div>
-                                </div>    
-                            </section>
-                            <!-- End commentform Area -->
-
-
-							</div>																		
+				  <div class="row">
+					<div class="col-lg-8 post-list blog-post-list">
+					  <div class="single-post">
+						<ul class="tags">
+						  <li id="company">Company :</li>
+						</ul>
+						<a href="#">
+						  <h1 id="job-title">Loading job...</h1>
+						</a>
+						<div class="content-wrap">
+						  <p id="job-desc">Please wait while we load job details...</p>
 						</div>
-						
-										
-
-						</div>
+			  
+						<!-- Application Form -->
+						<section class="commentform-area pt-80">
+						  <div class="container">
+							<h3 class="pb-50">Apply</h3>
+							<div class="row flex-row d-flex">
+							  <div class="col-lg-4 col-md-6">
+								<input name="name" id="name" placeholder="Enter your name" class="common-input mb-20 form-control" required type="text">
+								<input id="email" placeholder="Enter your email" class="common-input mb-20 form-control" required type="email">
+								<input id="specialization" placeholder="Enter your specialization" class="common-input mb-20 form-control" required type="text">
+								<input id="address" placeholder="Enter your address" class="common-input mb-20 form-control" required type="text">
+								<input id="mobile" placeholder="Enter your phone number" class="common-input mb-20 form-control" required type="number">
+								<!-- Optional resume upload -->
+								<!-- <input id="resume" placeholder="Upload your resume" class="common-input mb-20 form-control" type="file"> -->
+							  </div>
+							  <div class="col-lg-8 col-md-6">
+								<a class="primary-btn mt-20" href="#" id="insert">Send Application</a>
+							  </div>
+							</div>
+						  </div>
+						</section>
+						<!-- End Form -->
+					  </div>
 					</div>
-				</div>	
-			</section>
+				  </div>
+				</div>
+			  </section>
 			<!-- End blog-posts Area -->
 			
 
@@ -245,6 +222,40 @@
 					});
 				}
 				insertBtn.addEventListener('click', InsertData);
+				  
+					// Get job ID from URL
+					const urlParams = new URLSearchParams(window.location.search);
+					const jobId = decodeURIComponent(urlParams.get("id"));
+
+				const jobTitleEl = document.getElementById("job-title");
+				const jobDescEl = document.getElementById("job-desc");
+				const companyEl = document.getElementById("company");
+				const salaryEl = document.getElementById("salary");
+				const deadlineEl = document.getElementById("deadline");
+
+				async function loadJobDetail() {
+					if (!jobId) return;
+
+					try {
+					const snapshot = await get(child(ref(db), `Advertisements/${jobId}`));
+					if (snapshot.exists()) {
+						const job = snapshot.val();
+						jobTitleEl.textContent = `${job.Job_Title} - ${job.Location}`;
+						jobDescEl.textContent = job.Description;
+						companyEl.textContent = `Company: ${job.Company_Name}`;
+						salaryEl.textContent = `Salary: ₹${job.Salary}`;
+						deadlineEl.textContent = `Deadline: ${job.Deadline}`;
+					} else {
+						jobTitleEl.textContent = "Job Not Found";
+						jobDescEl.textContent = "";
+					}
+					} catch (error) {
+					console.error("Error fetching job:", error);
+					}
+				}
+
+				window.addEventListener("DOMContentLoaded", loadJobDetail);
+				
 			</script>
 
             <script src="js/vendor/jquery-2.2.4.min.js"></script>

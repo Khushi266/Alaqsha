@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/fav.png">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>AL-AQSHA Admin</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+        <!--
+        CSS
+        ============================================= -->
+        <link rel="stylesheet" href="css/linearicons.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/nice-select.css">                  
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        .table-container {
+            margin-top: 30px;
+        }
+
+        .table-wrapper {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+
+        #inquirySection {
+            margin-top: 8%;
+            text-align: center;
+        }
+
+        @media (max-width: 414px) {
+            #inquirySection {
+                margin-top: 25%;
+                padding: 2px ;
+            }
+
+            .table-wrapper {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header" id="home" style="background-color:#000000a8;">
+        <div class="container mt-25">
+            <div class="row align-items-center justify-content-between d-flex">
+              <div id="logo">
+                <a href="index.html"><img class="bg-img" src="img/logo.png"/></a>
+                <p>AL-AQSHA</p>
+              </div> 
+              <nav id="nav-menu-container">
+                <ul class="nav-menu">
+                  <li class="menu-active"><a href="index.html">Home</a></li>
+                  <li><a href="about.html">About</a></li>
+                  <li><a href="services.html">Services</a></li>
+                  <li><a href="career.html">Careers</a></li>
+                  <li><a href="clients.html">Our Clients</a></li>
+                  <li><a href="#footer">Contact</a></li>			          
+                </ul>
+              </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+      </header>
+
+    <div id="inquirySection">
+        <h1>Inquiries</h1>
+        <button id="inquiriesBtn" class="primary-btn mt-10">View Inquiries</button>
+        <button id="exportBtn" class="primary-btn mt-10">Export to Excel</button>
+
+        <div class="table-wrapper">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inquiriesTableBody">
+                        <!-- Inquiries will be displayed here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDI3TtZqhCvt2TCREPi7PYEm9b7IW23HRE",
+            authDomain: "al-aqsha-7c7ea.firebaseapp.com",
+            databaseURL: "https://al-aqsha-7c7ea-default-rtdb.firebaseio.com",
+            projectId: "al-aqsha-7c7ea",
+            storageBucket: "al-aqsha-7c7ea.appspot.com",
+            messagingSenderId: "997100251873",
+            appId: "1:997100251873:web:1821c6b2f4542ee97d65a0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+
+        const inquiriesBtn = document.getElementById("inquiriesBtn");
+        const inquiriesTableBody = document.getElementById("inquiriesTableBody");
+
+        inquiriesBtn.addEventListener("click", function () {
+            const dbRef = ref(db, "Inquiries");
+
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    inquiriesTableBody.innerHTML = "";
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const key = childSnapshot.key;
+
+                        inquiriesTableBody.innerHTML += `
+                            <tr id="inquiry-${key}">
+                                <td>${data.Name}</td>
+                                <td>${data.Message}</td>
+                                <td>${data.Email}</td>
+                                <td>${data.Phone_No}</td>
+                                <td><button class="delete-btn" data-key="${key}">Delete</button></td>
+                            </tr>
+                        `;
+                    });
+
+                    document.querySelectorAll(".delete-btn").forEach((btn) => {
+                        btn.addEventListener("click", function () {
+                            const key = this.getAttribute("data-key");
+                            deleteInquiry(key);
+                        });
+                    });
+                } else {
+                    alert("No inquiries found");
+                }
+            }).catch((err) => alert(err));
+        });
+
+        function deleteInquiry(key) {
+            remove(ref(db, "Inquiries/" + key))
+                .then(() => {
+                    alert("Inquiry deleted");
+                    const row = document.getElementById(`inquiry-${key}`);
+                    if (row) row.remove();
+                })
+                .catch((err) => alert(err));
+        }
+
+        document.getElementById("exportBtn").addEventListener("click", function () {
+            const table = document.querySelector("table");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Inquiries" });
+            XLSX.writeFile(wb, "inquiries.xlsx");
+        });
+    </script>
+
+</body>
+</html>

@@ -233,7 +233,7 @@
 								<img class="img-fluid" src="img/founder.PNG" alt="">								
 							</div>
 							<p class="date pml-33">Rehman Shaikh</p>
-							<a href="#"><h4 style="text-align:center;">Founder of Alaqsha Manpower Consultancy with more than 10+ years of experience.</h4></a>
+							<a href="#"><h4 style="text-align:center;">Founder of Al-Aqsha Manpower Consultancy with more than 10+ years of experience.</h4></a>
 													
 						</div>
 						<div class="col-lg-5 col-md-6 single-blog about-single">
@@ -241,7 +241,7 @@
 								<img class="img-fluid" src="img/co-founder.jpg" alt="">								
 							</div>
 							<p class="date pml-33">Tamanna Ahmad</p>
-							<a href="#"><h4 style="text-align:center;">Co - Founder of Alaqsha Manpower Consultancy.</h4></a>
+							<a href="#"><h4 style="text-align:center;">Co - Founder of Al-Aqsha Manpower Consultancy.</h4></a>
 							
 																
 						</div>
@@ -284,21 +284,21 @@
 								<p>Stay updated with us.</p>
 								<form action="#" method="POST">
 									<div class="form-group">
-									  <input type="text" name="name" placeholder="Your Name" required>
+									  <input type="text" name="name" id="name" placeholder="Your Name" required>
 									</div>
 									
 									<div class="form-group">
-									  <input type="text" name="subject" placeholder="Subject" required>
+									  <input type="text" name="subject" id="message" placeholder="Message" required>
 									</div>
 									<div class="form-group">
-									  <input type="textarea" name="message" placeholder="Your Message" rows="5" required></input>
+									  <input type="number" name="contact" id = "mobile" placeholder="Your Contact No." required>
 									</div>
 									
 								  </form>
 								<div class="" id="mc_embed_signup">
 									<form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
-										<input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
-			                            	<button type="submit" class="click-btn btn btn-default"><span class="lnr lnr-arrow-right"></span></button>
+										<input class="form-control" name="email" id="email" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
+			                            	<button type="submit" id="insert" class="click-btn btn btn-default"><span class="lnr lnr-arrow-right"></span></button>
 			                            	<div style="position: absolute; left: -5000px;">
 												<input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
 											</div>
@@ -324,6 +324,56 @@
 				</div>
 			</footer>	
 			<!-- End footer Area -->		
+
+			<script type="module">
+
+				import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+			
+				const firebaseConfig = {
+					apiKey: "AIzaSyDI3TtZqhCvt2TCREPi7PYEm9b7IW23HRE",
+					authDomain: "al-aqsha-7c7ea.firebaseapp.com",
+					databaseURL: "https://al-aqsha-7c7ea-default-rtdb.firebaseio.com",
+					projectId: "al-aqsha-7c7ea",
+					storageBucket: "al-aqsha-7c7ea.firebasestorage.app",
+					messagingSenderId: "997100251873",
+					appId: "1:997100251873:web:1821c6b2f4542ee97d65a0"
+				};
+		   
+		
+				import {getDatabase, ref, get, set, child, update, remove}
+				from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+				
+				
+				const app = initializeApp(firebaseConfig);
+				const db = getDatabase();
+		
+				var name = document.querySelector("#name");
+				var email = document.querySelector("#email");
+				var phone = document.querySelector("#mobile");
+				var message = document.querySelector("#message");
+			
+				
+
+				var insertBtn = document.querySelector("#insert");
+
+				function InsertData() {
+					set(ref(db, "Inquiries/"+ name.value),{
+						Name: name.value,
+						Email: email.value,
+						Phone_No: phone.value,
+						Message: message.value,
+					})
+					.then(()=>{
+						alert("Data added successfully");
+					})
+					.catch((error)=>{
+						alert(error);
+					});
+				}
+				insertBtn.addEventListener('click', InsertData);
+			</script>
+
+
 
 			<script src="js/vendor/jquery-2.2.4.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
