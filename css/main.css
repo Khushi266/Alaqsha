@@ -2351,7 +2351,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   top: 5%;
 }
 #logo p{
-  margin-left: 1%;
+  margin-left: -4%;
   width: 100%;
   top: 35%;
   position: absolute;
@@ -2461,7 +2461,7 @@ header{
     top: 15%;
   }
   #logo p{
-    margin-left: 12%;
+    margin-left: -22%;
     width: 100%;
     top : 30%;
     position: absolute;
